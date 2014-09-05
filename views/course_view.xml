@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+		<!--Crear la vista Formulario para Course-->
+		<record model="ir.ui.view" id="course_form_view">
+			<field name="name">course.form</field>
+			<field name="model">openacademy.course</field>
+			<field name="arch" type="xml">
+				<form string="Course Form" version="7.0">
+					<sheet>
+					<field name="name" colspan="4"/>
+					<field name="responsable_id" colspan="4"/>
+						<notebook colspan="4">
+							<page string="Description">						
+								<field name="description" colspan="4" nolabel="1"/>	
+							</page>
+							<page string="About">						
+								<label string="This is an example of notebooks"/>	
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!--Crear la vista Arbol para Course-->
+		<record model="ir.ui.view" id="course_tree_view">
+			<field name="name">course.tree</field>
+			<field name="model">openacademy.course</field>
+			<field name="arch" type="xml">
+				<tree string="Course Form">
+						<field name="name"/>
+						<field name="responsable_id" colspan="4"/>
+						<field name="description"/>
+				</tree>
+			</field>
+		</record>
+
+
+		<!--Crear menu principal-->
+		<menuitem id="main_menu_course" name="OpenAcademy"/>
+		<menuitem id="main_menu_manage" name="Manage" parent="main_menu_course"/>
+		<!--Crear la accion-->
+		<record model="ir.actions.act_window" id="course_list_action">
+			<field name="name">Courses</field>
+			<field name="res_model">openacademy.course</field>
+			<field name="view.type">form</field>
+			<field name="view.mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Create the first course</p>
+			</field>
+		</record>
+		<!--Ultimo menu-->
+		<menuitem id="menu_course" name="Courses" parent="main_menu_manage" action="course_list_action"/>
+	</data>
+</openerp>

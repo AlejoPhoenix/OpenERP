@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+		<!--Crear la vista Formulario para Session-->
+		<record model="ir.ui.view" id="session_form_view">
+			<field name="name">session.form</field>
+			<field name="model">openacademy.session</field>
+			<field name="arch" type="xml">
+				<form string="Session Form" version="7.0">
+					<sheet>
+						<field name="name" colspan="4"/>
+						<field name="instructor_id" colspan="4"/>
+						<field name="start_date" colspan="4"/>
+						<field name="duration" colspan="4"/>
+						<field name="seats" colspan="4"/>
+						<field name="course_id" colspan="4"/>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!--Crear la vista Arbol para Session-->
+		<record model="ir.ui.view" id="session_tree_view">
+			<field name="name">session.tree</field>
+			<field name="model">openacademy.session</field>
+			<field name="arch" type="xml">
+				<tree string="Session Form">
+						<field name="name"/>
+						<field name="course_id"/>						
+						<field name="instructor_id" colspan="4"/>
+						<field name="seats"/>
+				</tree>
+			</field>
+		</record>
+
+ 		<!--Crear la accion-->
+		<record model="ir.actions.act_window" id="session_list_action">
+			<field name="name">Sessions</field>
+			<field name="res_model">openacademy.session</field>
+			<field name="view.type">form</field>
+			<field name="view.mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Create the first session</p>
+			</field>
+		</record>
+		<!--Ultimo menu-->
+		<menuitem id="menu_session" name="Sessions" parent="main_menu_manage" action="session_list_action"/>
+	</data>
+</openerp>
