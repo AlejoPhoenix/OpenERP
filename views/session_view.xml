@@ -15,6 +15,7 @@
 						<field name="duration" colspan="4"/>
 						<field name="seats" colspan="4"/>
 						<field name="course_id" colspan="4"/>
+						<field name="attendee_ids" colspan="4"/>
 					</sheet>
 				</form>
 			</field>

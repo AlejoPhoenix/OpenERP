@@ -13,6 +13,9 @@
 					<field name="responsable_id" colspan="4"/>
 						<notebook colspan="4">
 							<page string="Description">						
+								<field name="session_ids" colspan="4" nolabel="1"/>	
+							</page>
+							<page string="Description">						
 								<field name="description" colspan="4" nolabel="1"/>	
 							</page>
 							<page string="About">						
