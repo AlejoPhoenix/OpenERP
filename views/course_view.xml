@@ -13,16 +13,19 @@
 					<field name="responsable_id" colspan="4"/>
 						<notebook colspan="4">
 							<page string="Description">						
-								<field name="session_ids" colspan="4" nolabel="1"/>	
-							</page>
-							<page string="Description">						
 								<field name="description" colspan="4" nolabel="1"/>	
-							</page>
+							</page>							
 							<page string="About">						
 								<label string="This is an example of notebooks"/>	
 							</page>
+							<field name="session_ids" nolabel="1" colspan="4" mode="tree">
+								<tree string="Registered Sessions">
+									<field name="name"/>
+									<field name="instructor_id"/>
+								</tree>
+							</field>
 						</notebook>
-					</sheet>
+					r</sheet>
 				</form>
 			</field>
 		</record>
@@ -32,10 +35,9 @@
 			<field name="name">course.tree</field>
 			<field name="model">openacademy.course</field>
 			<field name="arch" type="xml">
-				<tree string="Course Form">
+				<tree string="Course Tree">
 						<field name="name"/>
 						<field name="responsable_id" colspan="4"/>
-						<field name="description"/>
 				</tree>
 			</field>
 		</record>
