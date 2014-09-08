@@ -17,6 +17,7 @@
 	'data' : [
 			'views/course_view.xml',
 			'views/session_view.xml',
+			'views/partner_view.xml',
 			],
 	'depends' : ['base'],
 	'installable' : True,
