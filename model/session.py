@@ -59,6 +59,7 @@ class Session(osv.Model):
         return res
 
     def _check_instructor_not_in_attendees(self, cr, uid, ids):
+        print """Se dispara el constraint cuando se salve el registro"""
         for session in self.browse(cr, uid, ids):
             partners = [att.partner_id for att in session.attendee_ids]
             if session.instructor_id and session.instructor_id in partners:
