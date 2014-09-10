@@ -18,11 +18,11 @@
 						<separator string="Schedule" colspan="2"/>
 						<field name="start_date" colspan="4"/>
 						<field name="duration" colspan="4"/>
-						<field name="seats" colspan="4"/>
+						<field name="seats" colspan="4" onchange="onchange_taken_seats(seats,attendee_ids)"/>
 						<field name="taken_seats_percent" widget="progressbar" />
 					</group>
 					<separator string="Attendees" colspan="4"/>
-					<field name="attendee_ids" colspan="4" nolabel="1">
+					<field name="attendee_ids" colspan="4" nolabel="1" onchange="onchange_taken_seats(seats,attendee_ids)">
 						<tree string="" editable="bottom">
 							<field name="partner_id"/>
 						</tree>

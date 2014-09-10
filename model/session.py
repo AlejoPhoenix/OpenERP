@@ -27,3 +27,13 @@ class Session(osv.Model):
 			'instructor_id' :fields.many2one("res.partner",string="Instructor",domain="[('instructor','=',True)]"),
 			'attendee_ids' : fields.one2many("openacademy.attendee","session_id",string="Attendees",help="Who will be participated in this ession"),
 	}
+
+	def onchange_taken_seats(self, cr, uid, ids, seats, attendee_ids):
+		attendee_records = self.resolve_2many_commands(cr, uid, 'attendee_ids', attendee_ids,['id'])
+		res = {
+			value : {
+			 	'taken_seats_percent':
+			 		self._get_taken_seats_percent(seats,attendee_records),
+			},
+		}
+		return res
