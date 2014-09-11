@@ -25,6 +25,7 @@ class Session(osv.Model):
                 help="Please indicate when the session will start"),
         'duration': fields.float('Duration', digits=(6,2), help="It represent duration in Days"),
         'seats': fields.integer('Seats', help="Total seats availables"),
+        'active' : fields.boolean("Active"),
         'instructor_id' : fields.many2one('res.partner', string="Instructor",
                                           domain=['|',('instructor','=',True),
                                           ('category_id.name','ilike','Teacher')]),
@@ -34,6 +35,10 @@ class Session(osv.Model):
             help="Who will be participating in this session"),
         'taken_seats_percent': fields.function(_taken_seats_percent,
                                                 type='float', string='Taken Seats'),
+    }
+    _defaults = {
+        'start_date' : fields.date.today,
+        'active' : True,
     }
 
     def onchange_taken_seats(self, cr, uid, ids, seats, attendee_ids):
