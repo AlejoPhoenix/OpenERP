@@ -42,6 +42,17 @@
 			</field>
 		</record>
 
+		<!--Crear la vista de busqueda para Course-->
+		<record model="ir.ui.view" id="course_search_view">
+			<field name="name">course.search</field>
+			<field name="model">openacademy.course</field>
+			<field name="arch" type="xml">
+				<search string="Course Search">
+					<filter string="My Courses" icon="terp-partner" name="my_courses" domain="[('responsable_id','=',uid)]" help="My own courses"/>
+					<field name="name"/>
+				</search>
+			</field>
+		</record>
 
 		<!--Crear menu principal-->
 		<menuitem id="main_menu_course" name="OpenAcademy"/>
@@ -52,6 +63,7 @@
 			<field name="res_model">openacademy.course</field>
 			<field name="view.type">form</field>
 			<field name="view.mode">tree,form</field>
+			<field name='context'>{'search_default_my_courses':1}</field>
 			<field name="help" type="html">
 				<p class="oe_view_nocontent_create">Create the first course</p>
 			</field>
