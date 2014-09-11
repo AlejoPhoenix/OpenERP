@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from openerp.osv import fields, osv
-
+from datetime import datetime, timedelta
 class Session(osv.Model):
 
     _name = "openacademy.session"
@@ -18,11 +18,32 @@ class Session(osv.Model):
             result[session.id] = self._get_taken_seats_percent(session.seats, session.attendee_ids)
         return result
 
+    def _determine_end_date(self, cr, uid, ids, field, arg, context=None):
+        result = {}
+        for session in self.browse(cr,uid,ids,context=context):
+            if session.start_date and session.duration:
+                start_date = datetime.strptime(session.start_date, "%Y-%m-%d")
+                duration = timedelta( days=(session.duration - 1))
+                end_date = start_date + duration
+                result[session.id] = end_date.strftime("%Y-%m-%d")
+            else:
+                result[session.id] = session.start_date
+        return result
+
+    def _set_end_date(self, cr, uid, id, field, value, arg, context=None):
+        session = self.browse(cr,uid, id, context = context )
+        if session.start_date and value:
+            start_date = datetime.strptime(session.start_date, "%Y-%m-%d")
+            end_date = datetime.strptime(value[:10], "%Y-%m-%d")
+            duration = end_date - start_date
+            self.write(cr, uid, id, {'duration': (duration.days + 1)}, context=context)
+
     _columns = {
         'name': fields.char('Name of Session', 256,
                 help="Please describe correctly what is the session identifier"),        
         'start_date': fields.date('Start Date',
                 help="Please indicate when the session will start"),
+        'end_date' : fields.function(_determine_end_date, fnct_inv=_set_end_date, type='date', string="End date"),
         'duration': fields.float('Duration', digits=(6,2), help="It represent duration in Days"),
         'seats': fields.integer('Seats', help="Total seats availables"),
         'active' : fields.boolean("Active"),
