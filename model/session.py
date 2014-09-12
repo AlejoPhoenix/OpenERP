@@ -2,11 +2,12 @@
 
 from openerp.osv import fields, osv
 from datetime import datetime, timedelta
+import pdb
 class Session(osv.Model):
 
     _name = "openacademy.session"
 
-    def _determin_hours_for_duration(self, cr, uid, ids, field, arg, context=None):
+    def _determin_hours_from_duration(self, cr, uid, ids, field, arg, context=None):
         result={}
         sessions = self.browse(cr, uid, ids, context=context)
         for session in sessions:
@@ -49,6 +50,13 @@ class Session(osv.Model):
             duration = end_date - start_date
             self.write(cr, uid, id, {'duration': (duration.days + 1)}, context=context)
 
+    def _get_attendee_count(self, cr, uid, id, value, arg, context=None):
+        res = {}
+        for session in self.browse(cr,uid,ids):
+            pdb.set_trace()
+            res[session.id] = len(session.attendee_ids)
+        return res
+ 
     _columns = {
         'name': fields.char('Name of Session', 256,
                 help="Please describe correctly what is the session identifier"),        
@@ -67,7 +75,10 @@ class Session(osv.Model):
             help="Who will be participating in this session"),
         'taken_seats_percent': fields.function(_taken_seats_percent,
                                                 type='float', string='Taken Seats'),
-        'hours' : fields.function(_determin_hours_for_duration, fnct_inv=_set_hours,type='float',string='Hours'),
+        'hours' : fields.function(_determin_hours_from_duration, fnct_inv=_set_hours,type='float',string='Hours'),
+        #Aca Nhomar nos dice que agregar el atributo store='True' es necesario
+        'attendee_count' : fields.function(_get_attendee_count, type="integer", string="Attendee Count", method=True, store=True),
+
     }
     _defaults = {
         'start_date' : fields.date.today,

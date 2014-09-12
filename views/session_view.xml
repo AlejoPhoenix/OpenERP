@@ -82,13 +82,27 @@
           </field>
         </record>
 
+        <!-- Creo la vista Graph para Session
+        -->   
+        <record model="ir.ui.view" id="session_graph_view">
+          <field name="name">session.graph</field>
+          <field name="model">openacademy.session</field>
+          <field name="arch" type="xml">
+            <graph string="participations by Courses" type="bar">
+                <field name="course_id" /><!-- Eje X -->
+                <field name="attendee_count" operator="+"/><!-- Eje Y --> 
+                <!-- Eje Z Si hay un tercero -->
+            </graph>
+          </field>
+        </record>
+
      <!-- Creo la accion para Session
         -->   
         <record model="ir.actions.act_window" id="session_list_action">
           <field name="name">Sessions</field>
           <field name="res_model">openacademy.session</field>
           <field name="view_type">form</field>
-          <field name="view_mode">tree,form,calendar,gantt</field>
+          <field name="view_mode">tree,form,calendar,gantt,graph</field>
           <field name="help" type="html">
             <p class="oe_view_nocontent_create">Create the first session</p>
           </field>
