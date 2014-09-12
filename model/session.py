@@ -2,21 +2,10 @@
 
 from openerp.osv import fields, osv
 from datetime import datetime, timedelta
-import pdb
+
 class Session(osv.Model):
 
     _name = "openacademy.session"
-
-    def _determin_hours_from_duration(self, cr, uid, ids, field, arg, context=None):
-        result={}
-        sessions = self.browse(cr, uid, ids, context=context)
-        for session in sessions:
-            result[session.id]=(session.duration * 24 if session.duration \
-                                                    else 0)
-        return result
-    def _set_hours(self, cr, uid, id, field, value, arg, context=None):
-        if value:
-            self.write(cr, uid, id,{'duration': (value/24)}, context=context)
 
     def _get_taken_seats_percent(self, seats, attendee_list):
         try:
@@ -30,12 +19,12 @@ class Session(osv.Model):
             result[session.id] = self._get_taken_seats_percent(session.seats, session.attendee_ids)
         return result
 
-    def _determine_end_date(self, cr, uid, ids, field, arg, context=None):
+    def _determin_end_date(self, cr, uid, ids, field, arg, context=None):
         result = {}
-        for session in self.browse(cr,uid,ids,context=context):
+        for session in self.browse(cr, uid, ids, context=context):
             if session.start_date and session.duration:
                 start_date = datetime.strptime(session.start_date, "%Y-%m-%d")
-                duration = timedelta( days=(session.duration - 1))
+                duration = timedelta( days=(session.duration - 1) )
                 end_date = start_date + duration
                 result[session.id] = end_date.strftime("%Y-%m-%d")
             else:
@@ -43,29 +32,47 @@ class Session(osv.Model):
         return result
 
     def _set_end_date(self, cr, uid, id, field, value, arg, context=None):
-        session = self.browse(cr,uid, id, context = context )
+        session = self.browse(cr, uid, id, context=context)
         if session.start_date and value:
             start_date = datetime.strptime(session.start_date, "%Y-%m-%d")
             end_date = datetime.strptime(value[:10], "%Y-%m-%d")
             duration = end_date - start_date
-            self.write(cr, uid, id, {'duration': (duration.days + 1)}, context=context)
+            self.write(cr, uid, id, {'duration' : (duration.days + 1)},
+                               context=context)
 
-    def _get_attendee_count(self, cr, uid, id, value, arg, context=None):
+    def _determin_hours_from_duration(self, cr, uid, ids, field, arg, context=None):
+        result = {}
+        sessions = self.browse(cr, uid, ids, context=context)
+        for session in sessions:
+            result[session.id] = (session.duration * 24 if session.duration \
+                                                        else 0)
+        return result
+
+    def _set_hours(self, cr, uid, id, field, value, arg, context=None):
+        if value:
+            self.write(cr, uid, id,
+                       {'duration' : (value / 24)},
+                       context=context)
+
+    def _get_attendee_count(self, cr, uid, ids, name, args, context=None):
         res = {}
-        for session in self.browse(cr,uid,ids):
-            pdb.set_trace()
+        for session in self.browse(cr, uid, ids, context=context):
             res[session.id] = len(session.attendee_ids)
         return res
- 
+
     _columns = {
         'name': fields.char('Name of Session', 256,
                 help="Please describe correctly what is the session identifier"),        
         'start_date': fields.date('Start Date',
                 help="Please indicate when the session will start"),
-        'end_date' : fields.function(_determine_end_date, fnct_inv=_set_end_date, type='date', string="End date"),
+        'end_date': fields.function(_determin_end_date, fnct_inv=_set_end_date,
+                                                type='date', string='End Date'),
         'duration': fields.float('Duration', digits=(6,2), help="It represent duration in Days"),
+        'attendee_count': fields.function(_get_attendee_count,
+                                type='integer', string='Attendee Count', store=True),
+        'hours' : fields.function(_determin_hours_from_duration,
+            fnct_inv=_set_hours, type='float', string="Hours"),
         'seats': fields.integer('Seats', help="Total seats availables"),
-        'active' : fields.boolean("Active"),
         'instructor_id' : fields.many2one('res.partner', string="Instructor",
                                           domain=['|',('instructor','=',True),
                                           ('category_id.name','ilike','Teacher')]),
@@ -75,14 +82,12 @@ class Session(osv.Model):
             help="Who will be participating in this session"),
         'taken_seats_percent': fields.function(_taken_seats_percent,
                                                 type='float', string='Taken Seats'),
-        'hours' : fields.function(_determin_hours_from_duration, fnct_inv=_set_hours,type='float',string='Hours'),
-        #Aca Nhomar nos dice que agregar el atributo store='True' es necesario
-        'attendee_count' : fields.function(_get_attendee_count, type="integer", string="Attendee Count", method=True, store=True),
-
+        'active' : fields.boolean("Active"),
     }
+
     _defaults = {
         'start_date' : fields.date.today,
-        'active' : True,
+        'active': True,
     }
 
     def onchange_taken_seats(self, cr, uid, ids, seats, attendee_ids):
@@ -108,7 +113,6 @@ class Session(osv.Model):
         return res
 
     def _check_instructor_not_in_attendees(self, cr, uid, ids):
-        print """Se dispara el constraint cuando se salve el registro"""
         for session in self.browse(cr, uid, ids):
             partners = [att.partner_id for att in session.attendee_ids]
             if session.instructor_id and session.instructor_id in partners:
