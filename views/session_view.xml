@@ -16,6 +16,7 @@
                           <field name="instructor_id"/>
                           <field name="start_date"/>
                           <field name="duration"/>
+                          <field name="hours"/>
                           <field name="end_date"/>
                           <field name="seats" on_change="onchange_taken_seats(seats,attendee_ids)"/>
                           <field name="taken_seats_percent" widget="progressbar"/>
@@ -38,7 +39,7 @@
         -->   
 
         <record model="ir.ui.view" id="session_tree_view">
-          <field name="name">course.tree</field>
+          <field name="name">session.tree</field>
           <field name="model">openacademy.session</field>
           <field name="arch" type="xml">
             <tree string="Session Tree" colors="#0000ff:duration&lt;5;red:duration&gt;15">
@@ -53,7 +54,7 @@
       <!-- Creo la vista Calendar para Session
         -->   
         <record model="ir.ui.view" id="session_calendar_view">
-          <field name="name">course.calendar</field>
+          <field name="name">session.calendar</field>
           <field name="model">openacademy.session</field>
           <field name="arch" type="xml">
             <calendar string="Session Calendar" date_start="start_date" date_stop="end_date" color="instructor_id">
@@ -65,6 +66,21 @@
             </calendar>
           </field>
         </record>
+              <!-- Creo la vista Gantt para Session
+        -->   
+        <record model="ir.ui.view" id="session_gantt_view">
+          <field name="name">session.gantt</field>
+          <field name="model">openacademy.session</field>
+          <field name="arch" type="xml">
+            <gantt string="Session Gantt" date_start="start_date" date_delay="hours" color="instructor_id">
+              <level object="res.partner" link="instructor_id">
+                <field name="name" />
+              </level>
+              <!--<field name="instructor_id" String="Category Session" context="{'group_by':'instructor_id'}"/>
+              -->
+            </gantt>
+          </field>
+        </record>
 
      <!-- Creo la accion para Session
         -->   
@@ -72,10 +88,11 @@
           <field name="name">Sessions</field>
           <field name="res_model">openacademy.session</field>
           <field name="view_type">form</field>
-          <field name="view_mode">tree,form,calendar</field>
+          <field name="view_mode">tree,form,calendar,gantt</field>
           <field name="help" type="html">
             <p class="oe_view_nocontent_create">Create the first session</p>
           </field>
+          <field name="context">{'search_default_group_instructor_id':1}</field>
         </record>
      <!-- Creo El Menu de Cursos
         -->   

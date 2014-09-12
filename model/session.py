@@ -6,6 +6,17 @@ class Session(osv.Model):
 
     _name = "openacademy.session"
 
+    def _determin_hours_for_duration(self, cr, uid, ids, field, arg, context=None):
+        result={}
+        sessions = self.browse(cr, uid, ids, context=context)
+        for session in sessions:
+            result[session.id]=(session.duration * 24 if session.duration \
+                                                    else 0)
+        return result
+    def _set_hours(self, cr, uid, id, field, value, arg, context=None):
+        if value:
+            self.write(cr, uid, id,{'duration': (value/24)}, context=context)
+
     def _get_taken_seats_percent(self, seats, attendee_list):
         try:
             return (100.0 * len(attendee_list)) / seats
@@ -56,6 +67,7 @@ class Session(osv.Model):
             help="Who will be participating in this session"),
         'taken_seats_percent': fields.function(_taken_seats_percent,
                                                 type='float', string='Taken Seats'),
+        'hours' : fields.function(_determin_hours_for_duration, fnct_inv=_set_hours,type='float',string='Hours'),
     }
     _defaults = {
         'start_date' : fields.date.today,
